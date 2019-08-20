@@ -29,3 +29,4 @@ deploy:
   file: build/ios/iphoneos/app.ipa
   on:
     repo: youssef1337/flutter_quiz_app
+
