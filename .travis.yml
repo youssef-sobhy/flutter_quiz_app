@@ -1,0 +1,31 @@
+os: osx
+language: generic
+before_script:
+- brew update
+- brew install --HEAD usbmuxd
+- brew unlink usbmuxd
+- brew link usbmuxd
+- brew install --HEAD libimobiledevice
+- brew install ideviceinstaller
+- brew install ios-deploy
+- git clone https://github.com/flutter/flutter.git -b beta --depth 1
+script:
+- flutter/bin/flutter build ios --debug --no-codesign
+cache:
+  directories:
+  - "$HOME/.pub-cache"
+before_deploy:
+- pushd build/ios/iphoneos
+- mkdir Payload
+- cd Payload
+- ln -s ../Runner.app
+- cd ..
+- zip -r app.ipa Payload
+- popd
+deploy:
+  provider: releases
+  api_key:
+    secure: Kt+s6P9nn7PzQcDCaqE0kCV3hEWE5kk4xsv2bq+t6mgwbkJ2EWfKWnoIyCPuljZ+MzauOPPeAklTWGj6/tS9MQjU/zKAOKfUu4A4t/smJNUuAsjR7tJq99o+kWMdgbAQofPP7Aq3cMlJas8X1rtAuEFCbyrugQADUGl1p9JzWrlrB42HmJ3afSc5FsnZ6ABvX4TAeeIpGrAbUsiUenMDV/Ny8zIFDT6jmh0YgrNWRr308X9s1Ox/18yqIComZ1mYx0X2gVY/eN+af2F9N/Q2XbChZ2utwAzrWUBBSCOv8P9/lrDcLMO/5guPcalmuhZCDnW2beVTC2tH3J3MznuUgRGpAMJojEt5iEE1svOxKf62PthXXJNy/0/QrOFENhDO2F60U3kjTFyFQG6V4a/mMC/JwhyXXlDLoJDHREF6H9y/uqUSVlNb7Vf1o8OiuWHYeOd676iQUl54vbSV9Fg4cpamhqamBFeBY3dOZSTsDdo7eNhDjFnEGWyv01UuyCc11A5MDTUHv67rU6teqlR31n139C8vCcTIJzR36Dcba1z83y77zdkI5OyF5GPoB2gM0EeiwyutVw6IH5zVIv9B+qSLcs76GHRYXcwE+nlMPSeOMALTJhXQOawMDIme5RG/rwSAxA7L6xcH5QJ0yDT52n1NPXslCr2nZzyO52N9oJU=
+  file: build/ios/iphoneos/app.ipa
+  on:
+    repo: youssef1337/flutter_quiz_app
